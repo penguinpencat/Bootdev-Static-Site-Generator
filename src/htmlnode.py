@@ -1,6 +1,6 @@
 
 
-class HTMLNode():
+class HTMLNode:
     def __init__(self, tag = None, value = None, children = None, props = None):
         # A String represtenting the HTML tag name
         self.tag = tag
@@ -14,6 +14,15 @@ class HTMLNode():
         # A Dictionary of key-value pairs representing the attributes of the HTML tag, for example, a link (<a> tag) might have {"href": "https://www.google.com"}
         self.props = props
 
+    def __repr__(self):
+        return (f"tag = {self.tag}, value = {self.value}, children = {self.children}, props = {self.props}")
+    
+    def __eq__(self, value):
+        if self.tag == value.tag and self.value == value.value and self.children == value.children and self.props == value.props:
+            return True
+        else:
+            return False
+
     def to_html(self):
         raise NotImplementedError()
     
@@ -23,17 +32,23 @@ class HTMLNode():
         string = ""
         for prop in self.props:
             value = self.props[prop]
-            string += (f'{prop}="{value}" ')
+            string += (f' {prop}="{value}"')
         return string
-    
+
+
+class LeafNode(HTMLNode):
+    def __init__(self, tag, value, props=None):
+        super().__init__(tag, value, None, props)
+
     def __repr__(self):
-        return (f"tag = {self.tag}, value = {self.value}, children = {self.children}, props = {self.props}")
-    
-    def __eq__(self, value):
-        if self.tag == value.tag and self.value == value.value and self.children == value.children and self.props == value.props:
-            return True
-        else:
-            return False
+        return (f"tag = {self.tag}, value = {self.value}, props = {self.props}")
+
+    def to_html(self):
+        if self.value == None:
+            raise ValueError()
+        if self.tag == None:
+            return self.value
+        return f"<{self.tag}{self.props_to_html()}>{self.value}</{self.tag}>"
 
 
 
