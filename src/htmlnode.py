@@ -24,7 +24,7 @@ class HTMLNode:
             return False
 
     def to_html(self):
-        raise NotImplementedError()
+        raise NotImplementedError("SILLY PERSON, YOU DUMB PERSON, YOU DO NOT HAVE A TO_HTML METHOD SOMEWHERE IN YOU RIDICULOUSLY LONG CODE :]")
     
     def props_to_html(self):
         if self.props == None:
@@ -45,10 +45,26 @@ class LeafNode(HTMLNode):
 
     def to_html(self):
         if self.value == None:
-            raise ValueError()
+            raise ValueError("TEE HEE NO VALUE")
         if self.tag == None:
             return self.value
         return f"<{self.tag}{self.props_to_html()}>{self.value}</{self.tag}>"
+
+
+class ParentNode(HTMLNode):
+    def __init__(self, tag, children, props = None):
+        super().__init__(tag, None, children, props)
+
+    def to_html(self):
+        if self.tag == None:
+            raise ValueError("YOU DOESNT HAS A TAG")
+        if self.children == None:
+            raise ValueError("NO CHILD FOR YOU")
+        html_string = f"<{self.tag}{self.props_to_html()}>"
+        for child in self.children:
+            html_string += child.to_html()
+        html_string += f"</{self.tag}>"
+        return html_string
 
 
 

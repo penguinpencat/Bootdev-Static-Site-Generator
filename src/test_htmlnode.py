@@ -1,6 +1,6 @@
 import unittest
 
-from htmlnode import HTMLNode, LeafNode
+from htmlnode import HTMLNode, LeafNode, ParentNode
 
 
 class TestTextNode(unittest.TestCase):
@@ -29,6 +29,30 @@ class TestTextNode(unittest.TestCase):
         result1 = LeafNode("a", "CLICK ME PLEASE", {"href" : "aris_freear.dev", "target" : "_blank"}).to_html()
         result2 = '<a href="aris_freear.dev" target="_blank">CLICK ME PLEASE</a>'
         self.assertEqual(result1, result2)
+
+    def test_to_html_with_children(self):
+        child_node = LeafNode("span", "child")
+        parent_node = ParentNode("div", [child_node])
+        self.assertEqual(parent_node.to_html(), "<div><span>child</span></div>")
+
+    def test_to_html_with_grandchildren(self):
+        grandchild_node = LeafNode("b", "grandchild")
+        child_node = ParentNode("span", [grandchild_node])
+        parent_node = ParentNode("div", [child_node])
+        self.assertEqual(
+            parent_node.to_html(),
+            "<div><span><b>grandchild</b></span></div>",
+        )
+
+    def test_parent_node_NO_CHILD_error(self):
+        parent_node = ParentNode("div", None)
+        with self.assertRaises(ValueError):
+            parent_node.to_html()
+
+    def test_parent_node_no_tag_error(self):
+        parent_noe = ParentNode(None, [])
+        with self.assertRaises(ValueError):
+            parent_noe.to_html()
 
 if __name__ == "__main__":
     unittest.main()
