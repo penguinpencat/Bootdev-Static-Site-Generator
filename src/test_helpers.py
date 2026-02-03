@@ -83,3 +83,40 @@ class TestHelper(unittest.TestCase):
             new_nodes,
         )
 
+    def test_split_links_in_front(self):
+        node = TextNode(
+            "[link](https://www.daddy-is-the-best.com) this is text with a link and another [link, who wouldda guessed it](https://https://www.youtube.com/@bootdotdev) to boot.dev",
+            TextType.TEXT,
+        )
+        new_nodes = split_nodes_link([node])
+        self.assertListEqual(
+            [
+                TextNode("link", TextType.LINK, "https://www.daddy-is-the-best.com"),
+                TextNode(" this is text with a link and another ", TextType.TEXT),
+                TextNode(
+                    "link, who wouldda guessed it", TextType.LINK, "https://https://www.youtube.com/@bootdotdev"
+                ),
+                TextNode(" to boot.dev", TextType.TEXT)
+            ],
+            new_nodes,
+        )
+
+    def test_text_to_textnodes(self):
+        test_string = "This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
+        result = text_to_textnodes(test_string)
+        self.assertListEqual(
+            [
+                TextNode('This is ', TextType.TEXT), 
+                TextNode('text', TextType.BOLD), 
+                TextNode(' with an ', TextType.TEXT), 
+                TextNode('italic', TextType.ITALIC), 
+                TextNode(' word and a ', TextType.TEXT), 
+                TextNode('code block', TextType.CODE), 
+                TextNode(' and an ', TextType.TEXT), 
+                TextNode('obi wan image', TextType.IMAGE, 'https://i.imgur.com/fJRm4Vk.jpeg'), 
+                TextNode(' and a ', TextType.TEXT), 
+                TextNode('link', TextType.LINK, 'https://boot.dev')
+            ],
+            result
+        )
+
