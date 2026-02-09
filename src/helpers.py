@@ -95,3 +95,23 @@ def text_to_textnodes(text):
     nodes = split_nodes_link(nodes)
     return nodes
 
+
+def markdown_to_blocks(markdown):
+    block_strings = markdown.split("\n\n")
+    formatted_block_strings = []
+    for index, value in enumerate(block_strings):
+        value = value.strip()
+        if value != '':
+            formatted_block_strings.append(value)
+    return(formatted_block_strings)
+
+markdown_to_blocks("""
+                   This is **bolded** paragraph
+
+                   This is another paragraph with _italic_ text and `code` here
+                   This is the same paragraph on a new line
+
+                   - This is a list
+                   - with items
+
+                   """)
