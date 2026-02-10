@@ -8,6 +8,13 @@ class TextType(Enum):
     LINK = "link"
     IMAGE = "image"
 
+class BlockType(Enum):
+    PARAGRAPH = "paragraph"
+    HEADING = "heading"
+    CODE = "code"
+    QUOTE = "quote"
+    UNORDERED_LIST = "undordered_list"
+    ORDERED_LIST = "ordered list"
 
 class TextNode():
 
