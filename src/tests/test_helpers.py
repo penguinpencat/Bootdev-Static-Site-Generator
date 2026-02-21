@@ -1,9 +1,39 @@
 import unittest
 
-from htmlnode import HTMLNode, LeafNode, ParentNode
-from helpers import *
+from src.classes.htmlnode import HTMLNode, LeafNode, ParentNode
+from src.helpers.helpers import *
 
 class TestHelper(unittest.TestCase):
+    def test_text(self):
+        node = TextNode("This is a text node", TextType.TEXT)
+        html_node = text_node_to_html_node(node)
+        self.assertEqual(html_node.tag, None)
+        self.assertEqual(html_node.value, "This is a text node")
+
+
+    def test_bold(self):
+        node = TextNode("THIS IS BOLD TEXT", TextType.BOLD)
+        html_node = text_node_to_html_node(node)
+        self.assertEqual(html_node.tag, "b")
+        self.assertEqual(html_node.value, "THIS IS BOLD TEXT")
+
+
+    def test_link(self):
+        node = TextNode("I AM NOT A RICK ROLL", TextType.LINK, "www.google.com")
+        html_node = text_node_to_html_node(node)
+        self.assertEqual(html_node.tag, "a")
+        self.assertEqual(html_node.value, "I AM NOT A RICK ROLL")
+        self.assertEqual(html_node.to_html(), '<a href="www.google.com">I AM NOT A RICK ROLL</a>')
+
+
+    def test_img(self):
+        node = TextNode("it'sa gollum", TextType.IMAGE, "www.example.com/lordoftherings/gollum.jpeg")
+        html_node = text_node_to_html_node(node)
+        self.assertEqual(html_node.tag, "img")
+        self.assertEqual(html_node.value, "")
+        self.assertEqual(html_node.to_html(), '<img src="www.example.com/lordoftherings/gollum.jpeg" alt="it\'sa gollum"></img>')
+
+
     def test_split_code(self):
         node = TextNode("This is text with a `code block` word", TextType.TEXT)
         new_nodes = split_nodes_delimiter([node], "`", TextType.CODE)
@@ -174,7 +204,7 @@ This is **bolded** paragraph
             ],
         )
 
-    def test_markdown_to_blocks_one_block(self):
+    def test_markdown_to_blocks_empty(self):
         md = ""
         blocks = markdown_to_blocks(md)
         self.assertEqual(

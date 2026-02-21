@@ -1,5 +1,6 @@
-from textnode import TextNode, TextType
-from regex_help import *
+from src.classes.textnode import TextNode, TextType, BlockType
+from src.classes.htmlnode import LeafNode
+from src.helpers.regex_help import extract_markdown_images, extract_markdown_links, block_to_block_type
 
 def split_nodes_delimiter(old_nodes: list[TextNode], delimiter: str, text_type: TextType) -> list[TextNode]:
     """
@@ -96,6 +97,24 @@ def text_to_textnodes(text):
     return nodes
 
 
+def text_node_to_html_node(text_node: TextNode):
+    match text_node.text_type:
+        case TextType.TEXT:
+            return LeafNode(None, text_node.text, None)
+        case TextType.BOLD:
+            return LeafNode("b", text_node.text, None)
+        case TextType.ITALIC:
+            return LeafNode("i", text_node.text, None)
+        case TextType.CODE:
+            return LeafNode("code", text_node.text, None)
+        case TextType.LINK:
+            return LeafNode("a", text_node.text, {"href": text_node.url})
+        case TextType.IMAGE:
+            return LeafNode("img", "", {"src": text_node.url, "alt": text_node.text})
+        case _:
+            raise Exception(f"TextNode({TextNode}) is not a valid TextType")
+
+
 def markdown_to_blocks(markdown):
     block_strings = markdown.split("\n\n")
     formatted_block_strings = []
@@ -105,3 +124,25 @@ def markdown_to_blocks(markdown):
             formatted_block_strings.append(value)
     return(formatted_block_strings)
 
+
+def markdown_to_html_node(markdown):
+     blocks = markdown_to_blocks(markdown)
+     for block in blocks:
+          result = block_to_block_type(block)
+          if result == BlockType.HEADING:
+               pass
+          
+          elif result == BlockType.CODE:
+               pass
+          
+          elif result == BlockType.QUOTE:
+               pass
+          
+          elif result == BlockType.UNORDERED_LIST:
+               pass
+          
+          elif result == BlockType.ORDERED_LIST:
+               pass
+          
+          else:
+               pass

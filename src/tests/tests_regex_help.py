@@ -1,7 +1,7 @@
 import unittest
 
-from regex_help import extract_markdown_links, extract_markdown_images, block_to_block_type
-from textnode import BlockType
+from src.helpers.regex_help import extract_markdown_links, extract_markdown_images, block_to_block_type
+from src.classes.textnode import BlockType
 
 
 class TestRegexHelper(unittest.TestCase):
