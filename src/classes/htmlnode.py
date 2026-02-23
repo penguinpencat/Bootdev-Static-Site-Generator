@@ -1,6 +1,11 @@
 
 
 class HTMLNode:
+    tag: str
+    value: str
+    children: list
+    props: list
+
     def __init__(self, tag = None, value = None, children = None, props = None):
         # A String represtenting the HTML tag name
         self.tag = tag
@@ -22,6 +27,18 @@ class HTMLNode:
             return True
         else:
             return False
+
+    def setChildren(self, new_value):
+        if isinstance(new_value, list):
+            self.children = new_value
+        else:
+            self.children = None
+    
+    def appendChild(self, new_child):
+        if self.children == None:
+            self.setChildren([])
+        self.children.append(new_child)
+
 
     def to_html(self):
         raise NotImplementedError("SILLY PERSON, YOU DUMB PERSON, YOU DO NOT HAVE A TO_HTML METHOD SOMEWHERE IN YOU RIDICULOUSLY LONG CODE :]")

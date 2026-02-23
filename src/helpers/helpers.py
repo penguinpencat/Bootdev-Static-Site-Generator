@@ -1,6 +1,6 @@
 from src.classes.textnode import TextNode, TextType, BlockType
-from src.classes.htmlnode import LeafNode
-from src.helpers.regex_help import extract_markdown_images, extract_markdown_links, block_to_block_type
+from src.classes.htmlnode import LeafNode, ParentNode
+from src.helpers.regex_help import extract_markdown_images, extract_markdown_links, block_to_block_type, strip_numbers_from_start
 
 def split_nodes_delimiter(old_nodes: list[TextNode], delimiter: str, text_type: TextType) -> list[TextNode]:
     """
@@ -126,23 +126,65 @@ def markdown_to_blocks(markdown):
 
 
 def markdown_to_html_node(markdown):
-     blocks = markdown_to_blocks(markdown)
-     for block in blocks:
-          result = block_to_block_type(block)
-          if result == BlockType.HEADING:
-               pass
+    blocks = markdown_to_blocks(markdown)
+    parent_node = ParentNode("div", [])
+    for block in blocks:
+        result = block_to_block_type(block)
+        if result == BlockType.HEADING:
+            original_length = len(block)
+            stripped_text = block.lstrip('#')
+            new_length = len(stripped_text)
+            tag = f"h{original_length-new_length}"
+            new_node = LeafNode(tag, stripped_text.lstrip(" "))
           
-          elif result == BlockType.CODE:
-               pass
+        elif result == BlockType.CODE:
+            lines = block.splitlines()
+            if lines[0].startswith("```"):
+                lines = lines[1:]
+            if lines and lines[-1].startswith("```"):
+                lines = lines[:-1]
+            contents = "\n".join(lines)
+            content_node = TextNode(contents, TextType.TEXT)
+            content_html_node = text_node_to_html_node(content_node)
+            new_node = ParentNode('pre', [])
+            new_node.appendChild(ParentNode("code", [content_html_node]))
           
-          elif result == BlockType.QUOTE:
-               pass
+        elif result == BlockType.QUOTE:
+            lines = block.split("\n")
+            new_lines = []
+            for line in lines:
+                line = line.strip().lstrip(">").strip()
+                new_lines.append(line)
+            
+            contents = "\n".join(new_lines)
+            new_node = LeafNode('blockquote', contents)
           
-          elif result == BlockType.UNORDERED_LIST:
-               pass
+        elif result == BlockType.UNORDERED_LIST:
+            new_node = ParentNode('ul', [])
+            lines = block.split("\n")
+            new_lines = []
+            for line in lines:
+                line = line.strip().lstrip("*-+").strip()
+                list_item = LeafNode("li", line)
+                new_node.appendChild(list_item)
           
-          elif result == BlockType.ORDERED_LIST:
-               pass
+        elif result == BlockType.ORDERED_LIST:
+            new_node = ParentNode('ol', [])
+            lines = block.split("\n")
+            new_lines = []
+            for line in lines:
+                line = line.strip()
+                line = strip_numbers_from_start(line)
+                line = line.strip()
+                list_item = LeafNode("li", line)
+                new_node.appendChild(list_item)
           
-          else:
-               pass
+        else:
+            new_node = ParentNode('p', [])
+            textnodes = text_to_textnodes(block)
+            for textnode in textnodes:
+                htmlnode = text_node_to_html_node(textnode)
+                new_node.appendChild(htmlnode)
+
+        parent_node.appendChild(new_node)
+    return parent_node

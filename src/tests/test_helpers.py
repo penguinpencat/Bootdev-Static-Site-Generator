@@ -212,3 +212,81 @@ This is **bolded** paragraph
             [],
         )
 
+
+    def test_markdown_to_html_node_paragraphs(self):
+            md = """
+This is **bolded** paragraph 
+text in a p 
+tag here
+
+This is another paragraph with _italic_ text and `code` here
+
+"""
+
+            node = markdown_to_html_node(md)
+            html = node.to_html()
+            self.assertEqual(
+                html,
+                "<div><p>This is <b>bolded</b> paragraph \ntext in a p \ntag here</p><p>This is another paragraph with <i>italic</i> text and <code>code</code> here</p></div>",
+            )
+
+    def test_markdown_to_html_node_codeblock(self):
+            md = """
+```
+This is text that _should_ remain
+the **same** even with inline stuff
+```
+"""
+
+            node = markdown_to_html_node(md)
+            html = node.to_html()
+            self.assertEqual(
+                html,
+                "<div><pre><code>This is text that _should_ remain\nthe **same** even with inline stuff</code></pre></div>",
+            )
+
+    def test_markdown_to_html_node_big_document(self):
+        md = """
+# Heading
+
+Text paragraph
+with multiple lines
+and a [link](www.moo.com) inside with
+some `code` and
+more text afterwards
+
+![alt text](https://image.source)
+
+> this is
+> a block
+> quote
+
+* list item 1
+* list item 2
+
+- sgds
+- sdgsd
+
+1. Ordered Item 1
+2. Ordered Item 2
+
+```
+    <?php
+    $variable = "string"
+    var_dump($variable)
+```
+"""
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            """<div><h1>Heading</h1><p>Text paragraph
+with multiple lines
+and a <a href="www.moo.com">link</a> inside with
+some <code>code</code> and
+more text afterwards</p><p><img src="https://image.source" alt="alt text"></img></p><blockquote>this is
+a block
+quote</blockquote><ul><li>list item 1</li><li>list item 2</li></ul><ul><li>sgds</li><li>sdgsd</li></ul><ol><li>Ordered Item 1</li><li>Ordered Item 2</li></ol><pre><code>    <?php
+    $variable = "string"
+    var_dump($variable)</code></pre></div>""",
+        )

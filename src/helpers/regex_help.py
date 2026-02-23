@@ -14,16 +14,17 @@ def extract_markdown_images(text):
     return tuples
 
 def block_to_block_type(text):
-    if re.fullmatch(r"^# .*$", text):
+    text = text.strip()
+    if re.fullmatch(r"^#{1,6} .*$", text):
         return BlockType.HEADING
 
-    elif re.fullmatch(r"^```\n[\s\S]*\n```$", text):
+    elif re.fullmatch(r"^```\n[\s\S]*\n\s*```$", text):
          return BlockType.CODE
     
     elif re.fullmatch(r"^(>.*\n?)+", text):
             return BlockType.QUOTE
     
-    elif re.fullmatch(r"([-*] .*\n?)+", text):
+    elif re.fullmatch(r"([-*+] .*\n?)+", text):
         return BlockType.UNORDERED_LIST
     
     elif re.fullmatch(r"(\d\. .*\n?)+", text):
@@ -32,6 +33,9 @@ def block_to_block_type(text):
     else:
         return BlockType.PARAGRAPH
 
+def strip_numbers_from_start(text):
+     clean_text = re.sub(r'^\d+\.\s?', '', text)
+     return clean_text
 
 #extract_markdown_links("click [here](www.more.net) for info. I'm just joking, it's a [RICK ROLL](https://www.youtube.com/watch?v=dQw4w9WgXcQ)")
 #extract_markdown_images("This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) and ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)")
