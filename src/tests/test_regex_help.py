@@ -1,11 +1,19 @@
 import unittest
 
-from src.helpers.regex_help import extract_markdown_links, extract_markdown_images, block_to_block_type
+from src.helpers.regex_help import extract_markdown_links, extract_markdown_images, block_to_block_type, extract_markdown_html_title
 from src.classes.textnode import BlockType
-
 
 class TestRegexHelper(unittest.TestCase):
     
+    def test_extract_title(self):
+        title = extract_markdown_html_title(
+            """# Lord of the Rings fanclub
+
+            ## Subtitle
+
+            Text and other things"""
+        )
+        self.assertEqual("Lord of the Rings fanclub", title)
     def test_extract_markdown_images(self):
         matches = extract_markdown_images(
             "This is text with an ![image](https://i.imgur.com/zjjcJKZ.png)"
