@@ -1,6 +1,12 @@
 import re
 from src.classes.textnode import BlockType
 
+def extract_markdown_html_title(text):
+    heading = re.search(r"^#\s+(.*)$", text, re.MULTILINE)
+    if heading != None:
+        return heading.group(1)
+    raise Exception("No title header found.")
+
 def extract_markdown_links(text):
     tuples = []
     matches = re.findall(r"\[(.*?)\]\((.*?)\)", text)
