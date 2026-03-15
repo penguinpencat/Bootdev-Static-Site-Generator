@@ -1,3 +1,10 @@
+@font-face {
+  font-family: 'Luminari';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Luminari'), url('Luminari-Regular.woff') format('woff');
+}
+
 body {
   background-color: #1f1c25;
   color: #f0e6d1;
