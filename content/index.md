@@ -20,7 +20,6 @@ Here's the deal, **I like Tolkien**.
 - It can be enjoyed by children and adults alike
 - Disney _didn't ruin it_ (okay, but Amazon might have)
 - It created an entirely new genre of fantasy
-- Hello Mummy, I love you!! Hope you have a nice time!
 
 ## My favorite characters (in order)
 
