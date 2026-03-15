@@ -135,7 +135,12 @@ def markdown_to_html_node(markdown):
             stripped_text = block.lstrip('#')
             new_length = len(stripped_text)
             tag = f"h{original_length-new_length}"
-            new_node = LeafNode(tag, stripped_text.lstrip(" "))
+            new_node = ParentNode(tag, [])
+            stripped_text = stripped_text.lstrip(" ")
+            textnodes = text_to_textnodes(stripped_text)
+            for textnode in textnodes:
+                htmlnode = text_node_to_html_node(textnode)
+                new_node.appendChild(htmlnode)
           
         elif result == BlockType.CODE:
             lines = block.splitlines()
@@ -165,7 +170,11 @@ def markdown_to_html_node(markdown):
             new_lines = []
             for line in lines:
                 line = line.strip().lstrip("*-+").strip()
-                list_item = LeafNode("li", line)
+                list_item = ParentNode("li", [])
+                textnodes = text_to_textnodes(line)
+                for textnode in textnodes:
+                    htmlnode = text_node_to_html_node(textnode)
+                    list_item.appendChild(htmlnode)
                 new_node.appendChild(list_item)
           
         elif result == BlockType.ORDERED_LIST:
@@ -176,7 +185,11 @@ def markdown_to_html_node(markdown):
                 line = line.strip()
                 line = strip_numbers_from_start(line)
                 line = line.strip()
-                list_item = LeafNode("li", line)
+                list_item = ParentNode("li", [])
+                textnodes = text_to_textnodes(line)
+                for textnode in textnodes:
+                    htmlnode = text_node_to_html_node(textnode)
+                    list_item.appendChild(htmlnode)
                 new_node.appendChild(list_item)
           
         else:
